@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../../templates/template.xhtml">
+
+            <ui:define name="title">
+                #{msgm['TESTINDICATION.TITLE']}
+            </ui:define>
+
+            <ui:define name="container-right">
+                <c:if test="#{testBean.isATestAvailable()}">
+                    <h2>
+                        #{testBean.test.libelle} - #{testBean.test.testFinal ? msgm['TESTINDICATION.FINAL'] : msgm['TESTINDICATION.ECHAUFFEMENT']}
+                    </h2>
+                    <h2>
+                        #{msgm['TESTINDICATION.REQUISIT']}
+                    </h2>
+                    <c:forEach items="#{parametreBean.getLines(testBean.test.prerequis)}" var="line" varStatus="stats">
+                        <p:outputLabel value="#{stats.index + 1} - #{line}" /><br/><br/>
+                    </c:forEach>
+                    <h2>
+                        #{msgm['TESTINDICATION.LANGAGES']}
+                    </h2>
+                    <c:forEach items="#{langageBean.langages}" var="line" varStatus="stats">
+                        <p:outputLabel value="#{stats.index + 1} - #{line}" /><br/><br/>
+                    </c:forEach>
+                </c:if>
+                <p:dialog widgetVar="dlg" id="dlg" modal="true" responsive="true" showEffect="fade" closable="false" 
+                          resizable="false" draggable="false">
+                    <p:messages autoUpdate="true" globalOnly="true" closable="false" />
+                    <p:commandButton value="OK" />
+                </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

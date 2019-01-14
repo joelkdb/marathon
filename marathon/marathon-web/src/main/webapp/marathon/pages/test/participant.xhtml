@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../templates/template.xhtml">
+
+            <ui:define name="title">
+                #{msgm['TESTPARTICIPANT.TITLE']}
+            </ui:define>
+
+            <ui:define name="container-right">
+                <p:dataScroller scrollHeight="600" mode="inline" value="#{equipeBean.dataList}" var="equipe">
+                    <f:facet name="header">
+                        Liste des équipes et leurs participants
+                    </f:facet>
+                <h:panelGrid columns="2">
+                    <p:graphicImage library="images" name="team2.jpeg" cache="false" width="30%" height="30%" />
+                    <h:panelGrid columns="1">
+                        <h3>#{equipe.nom}</h3>
+                        <ui:repeat  value="#{equipe.participants}" var="pMa" varStatus="pMaStats">
+                            #{pMaStats.index + 1} - <p:outputLabel 
+                                value="#{pMa.nom} #{pMa.prenom} (#{pMa.etablissement}/#{pMa.niveauEtude})" 
+                                style="font-weight: bold"/> <br/>
+                        </ui:repeat>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </p:dataScroller>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

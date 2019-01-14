@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Marathon - Authentification</title>
+        
+        <h:outputStylesheet library="css" name="style1.css" />
+    </h:head>
+    <h:body>
+        <p:dialog header="Authentification" visible="true" widgetVar="dlg" id="dlg" responsive="true"
+                          closable="false" resizable="false" draggable="false">
+                    <o:form id="login-form" includeViewParams="true">
+                        <p:focus context="login-form"/>
+                        <h:panelGrid columns="3" cellpadding="5">
+                            <p:outputLabel value="#{msgm['AUTHENTIFICATION.ID']}" for="login" />
+                            <p:inputText id="login" value="#{loginBean.username}" required="true" 
+                                         requiredMessage="#{msgm['AUTHENTIFICATION.MSG_REQUIRED']}" />
+                            <p:message for="login" id="loginMsg" />
+
+                            <p:outputLabel value="#{msgm['AUTHENTIFICATION.PASSWORD']}" for="passwd" />
+                            <p:password id="passwd" value="#{loginBean.password}" required="true"
+                                        requiredMessage="#{msgm['AUTHENTIFICATION.MSG_REQUIRED']}" redisplay="true" />
+                            <p:message for="passwd" id="passwdMsg" />
+
+                            <p:column />
+                            <p:commandButton value="#{msgm['AUTHENTIFICATION.CONNECTER']}" process="@form"
+                                             action="#{loginBean.login()}" update="@form" id="connect" icon="ui-icon-check"
+                                             ajax="false" style="background-color: rgba(26,188,156,1.0);"/>
+                            <p:defaultCommand target="connect" />
+                        </h:panelGrid>
+                    </o:form>
+                    <f:facet name="footer">
+                        <p:messages closable="true" globalOnly="true">
+                            <p:autoUpdate/>
+                        </p:messages>
+                    </f:facet>
+                </p:dialog>
+    </h:body>
+</html>

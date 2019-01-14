@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/core/templates/default/layout.xhtml">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="title">
+        Configurer le dossier de sauvegarde
+    </ui:define>
+
+    <ui:define name="description">
+        Modifier le dossier de stockage  par défaut des fichiers de sauvegarde
+    </ui:define>
+   
+    <ui:define name="content">
+        <h:body>
+            <h:form>
+            <p:panel id="head" header="Configurer"  style="margin-bottom:20px" >
+               
+                
+                <p:outputLabel style="color: orange" value="Les fichiers de sauvegarde se trouve par défaut sur le disque C dans le dossier  msBackup" />
+                <h:panelGrid columns="3" cellspacing="30">
+                    <p:outputLabel value= " Dossier de destination" for="backupfolder" />
+                    <p:inputText value="#{backupBean.backupfoldertemp}" id="backupfolder" required="true" requiredMessage="Champ obligatoire" placeholder="C:\msbackup"/>
+                   <p:message for="backupfolder"/>
+                </h:panelGrid> 
+            
+                <p:separator/>
+                <p:commandButton value="Modifier" update="@form" actionListener="#{backupBean.modifyBackupFolder()}"/>
+            </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

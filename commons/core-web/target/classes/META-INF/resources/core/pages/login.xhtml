@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>
+            <h:outputText value="#{msg['core.pages.login.title']}"/>
+            - 
+            <h:outputText value="#{applicationBean.applicationDisplayName}" />
+        </title>
+        <h:outputStylesheet library="core" name="templates/default/css/styles.css" />
+    </h:head>
+    <h:body>
+        <div class="ui-g">
+            <div class="ui-g-12 ui-md-3 ui-lg-4"></div>
+            <div class="ui-g-12 ui-md-6 ui-lg-4">
+                <ui:include src="login-form.xhtml"/>
+            </div>
+            <div class="ui-g-12 ui-md-3 ui-lg-4"></div>
+        </div>
+        <!--<b:container fluid="true">
+            <b:row>
+                <b:column col-lg="4" offset-lg="4" 
+                          col-md="6" offset-md="3" 
+                          col-xs="12" offset-xs="0">
+                    <ui:include src="login-form.xhtml"/>
+                </b:column>
+            </b:row>
+        </b:container>-->
+    </h:body>
+</html>
+

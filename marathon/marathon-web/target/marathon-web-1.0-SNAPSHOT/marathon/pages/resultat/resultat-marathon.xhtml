@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <body>
+
+        <ui:composition template="./../../templates/template.xhtml">
+
+            <ui:define name="title">
+                #{msgm['RESULATMARATHON.TTILE']}
+            </ui:define>
+
+            <ui:define name="container-right">
+                <h3 style="text-align: center">#{marathon['resultMarathonView.resultats']}</h3>
+                <c:forEach items="#{resultatMarathonBean.chartModelList}" var="model">
+                    <p:chart type="bar" model="#{model}" responsive="true" id="resultatMarChar"/>
+                </c:forEach>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

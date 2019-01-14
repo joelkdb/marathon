@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="title">
+                Journal des évènements
+            </ui:define>
+
+            <ui:define name="container-right">
+                <h:form>
+                    <p:dataTable value="#{logEventBean.model}" var="e"  rows="10"
+                                 lazy="true" paginator="true" sortMode="multiple"
+                                 sortField="eventDate" sortOrder="descending">
+                        <p:column headerText="Type" field="category.code">
+                            <h:outputText value="#{e.category.label}"/>
+                        </p:column>
+                        <p:column headerText="Date" field="eventDate">
+                            <h:outputText value="#{e.eventDate}">
+                                <f:convertDateTime pattern="dd/MM/yyyy h:m:s"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Message" sortable="false">
+                            <h:outputText value="#{e.message}"/>
+                        </p:column>
+                        <p:column headerText="Utilisateur" field="user.username">
+                            <h:outputText value="#{e.user.username}"/>
+                        </p:column>
+                        <p:column headerText="Sévérité" field="level.id">
+                            <f:facet name="filter">
+
+                            </f:facet>
+                            <h:outputText value="#{e.level.label}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+

@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/core/templates/default/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="title">
+        Restaurer 
+    </ui:define>
+
+    <ui:define name="description">
+       Restaurer la base de données à partir d'un fichier de sauvegarde
+    </ui:define>
+    <ui:define name="content">
+        <h:form enctype="multipart/form-data">
+        <p:panel id="backup" style="margin-bottom: 20px" header="Restaurer à partir d'une sauvegarde" >
+            <!--            <p:fieldset legend="Basic" style="margin-bottom:20px">-->
+            <h:panelGrid columns="3" cellspacing="20" >
+
+                <p:outputLabel value="Unite de persistance" for="persistenceunit" style="margin-left: 15px;"   />
+                <p:inputText  id="persistenceunit" value="#{backupBean.configuration.persistenceName}" style="width: 300px" required="true" />
+                <p:messages for="persistenceunit" />
+            </h:panelGrid>
+            <p:outputLabel value="Fichier de sauvegarde" />
+            <p:separator style="width: 500px; margin-left: 5px; height: 3px;"/>
+            <p:outputLabel value="Sélectionner le fichier de sauvegarde dont le nom se termine par (.xml,.json)" style="margin-left: 22px;" />
+            <h:panelGrid style="padding-top: 20px;" columns="2" cellspacing="20px;">
+                <p:outputLabel value="Parcourir : " style="margin-left: 15px;"/>
+                <p:fileUpload      fileUploadListener="#{backupBean.handleFileUpload}" label="Choisir"   id="upload"  mode="advanced" skinSimple="true" 
+                                   allowTypes="/(\.|\/)(xml|json)$/"    update="panelrender">      
+                    
+                </p:fileUpload>
+              </h:panelGrid>
+            <p:outputLabel value="Information sur le fichier selectionné " />
+            <p:separator style="width: 500px; margin-left: 5px; height: 3px;"/>
+            <h:panelGrid id="panelrender" columns="2"  cellpadding="10"   >
+                <p:outputLabel value="Nom: " />
+                <p:outputLabel value="#{backupBean.name}" />                
+                <p:outputLabel value="Format: "/>         
+                <p:outputLabel value="#{backupBean.extension}"/>
+            </h:panelGrid>
+              
+            <p:toolbar style="margin-top: 30">
+                <f:facet name="left">
+                <p:commandButton id="btnExceuterRestauration" value="Exécuter" action="#{backupBean.executeRestore}" />
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btncancel" value="Annuler" action="#{backupBean.cancel()}"  style="margin-right: 850"/>
+                </f:facet>
+            </p:toolbar>
+           
+           
+            <!--            </p:fieldset>-->
+        </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,93 @@
+body {
+    margin: 0px;
+    background-color: #F3F3F3;
+}
+
+@font-face {
+    font-family: 'BernadoModa';
+    src: url('/marathon-web/resources/css/fonts/Bernardo-Moda-Bold.ttf') format('ttf'),
+        url('/marathon-web/resources/css/fonts/Bernardo-Moda-Bold.ttf') format('truetype');
+}
+
+.ui-widget,.ui-widget .ui-widget ,.ui-widget-header, .ui-widget-content,.ui-messages-error-detail, h3{
+    font-family: 'Segoe UI';
+    font-size: 18px;
+    font-weight: 100;
+}
+/**/
+.iconBtn{
+    height: 30px;
+}
+
+.centered-block {
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+}
+
+.topbar {
+    width: 98%;
+    /*    position: fixed;*/
+    z-index: 1000;
+    background-color: rgba(26,188,156,1.0);
+    padding: 10px 1%;
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+}
+
+h2, .title {
+    font-size: 26px;
+    font-family: 'BernadoModa';
+    font-weight: bolder;
+    /*    text-align: center;*/
+}
+
+.ui-inputtext,.ui-menuitem-text,h2,.title {
+    color : rgba(26,188,156,1.0);
+}
+
+.ui-widget-header{
+    background-color: rgba(26,188,156,1.0);
+}
+
+.ui-button, .ui-steps .ui-steps-item .ui-steps-number, .ui-tabs-top .ui-tabs-nav{
+    background-color: rgba(26,188,156,1.0);
+}
+
+/*, .ui-inputswitch*/
+.app-name {
+    color: white;
+    font-family: 'BernadoModa';
+    font-weight: bolder;
+    font-size: 28px;
+    width: auto;
+    height: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.logo {
+    transition: all 0.3s ease 0s;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #FFF;
+    overflow: hidden;
+    float: left;
+    background-color: rgba(42, 42, 42, 0.2);
+}
+
+.prgBar{
+    margin-bottom: 20px;
+}
+
+.tabStyle{
+    font-weight: bolder;
+}
+
+.roundedImage{
+    overflow: hidden hidden;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    border-radius: 50px;
+    width: 100%;
+    height: 235px;
+}

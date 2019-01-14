@@ -1,0 +1,556 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../templates/template.xhtml">
+
+            <ui:define name="title">
+                #{msgm['PARAMETRAGE.TITLE']}
+            </ui:define>
+
+            <ui:define name="container-right">
+                <p:tabView dynamic="true" id="paramTab" >
+                    <p:ajax event="tabChange" process="@this" ignoreAutoUpdate="true"/>
+                    <!--                    Marathon-->
+                    <p:tab title="#{msgm['PARAMETRAGE.TAB1.TITLE']}" titleStyleClass="tabStyle">
+                        <p:fieldset title="Nouveau marathon" styleClass="marathonField">
+                            <h:form>
+                                <!--                                <p:growl id="growl1" showDetail="true" sticky="true" life="10000"/>-->
+                                <h:panelGrid columns="6" cellspacing="4" cellpadding="5">
+                                    <p:outputLabel value="#{msgm['PARAMETRAGE.TAB1.LIBELLE']}" for="libelle"/>
+                                    <p:inputText id="libelle" required="true" value="#{marathonCrudBean.entity.libelle}"
+                                                 requiredMessage="#{msgm['PARAMETRAGE.TAB1.MSG_LIBELLE']}"
+                                                 styleClass="marathonField"/>
+
+                                    <p:outputLabel value="#{msgm['PARAMETRAGE.TAB1.DATEDEBUT']}" for="dateDebut"/>
+                                    <p:inputMask mask="99/99/9999" id="dateDebut" required="true" 
+                                                 requiredMessage="#{msgm['PARAMETRAGE.TAB1.MSG_DATEDEBUT']}"
+                                                 value="#{marathonCrudBean.entity.dateDebut}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </p:inputMask>
+
+                                    <p:outputLabel value="#{msgm['PARAMETRAGE.TAB1.DATEFIN']}" for="dateFin"/>
+                                    <p:inputMask mask="99/99/9999" id="dateFin" required="true"
+                                                 requiredMessage="#{msgm['PARAMETRAGE.TAB1.MSG_DATEFIN']}"
+                                                 value="#{marathonCrudBean.entity.dateFin}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </p:inputMask>
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="3">
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN1']}" icon="fa fa-save"
+                                                     action="#{marathonCrudBean.add()}" update="@form @(.marathons)"
+                                                     disabled="#{marathonCrudBean.disableSave}" process="@form"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN2']}" icon="fa fa-ban"
+                                                     action="#{marathonCrudBean.init()}" 
+                                                     update="@form" immediate="true" process="@this"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN3']}" icon="fa fa-edit"
+                                                     disabled="#{marathonCrudBean.disableEdit}"
+                                                     action="#{marathonCrudBean.update()}" update="@form @(.marathons)" 
+                                                     process="@form"/>
+                                </h:panelGrid>
+                            </h:form>
+                        </p:fieldset>
+                        <p:fieldset title="Liste des marathons">
+                            <h:form>
+                                <p:dataTable var="itemM" value="#{marathonCrudBean.model}" id="marathon" styleClass="marathons"
+                                             reflow="true" rows="5" paginator="true" lazy="true" rowKey="#{itemM.code}"
+                                             emptyMessage="Liste vide." sortBy="#{itemM.code}" sortOrder="descending">
+                                    <p:column headerText="Libellé marathon">
+                                        <center>
+                                            <h:outputText value="#{itemM.libelle}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Date de Début">
+                                        <center>
+                                            <h:outputText value="#{itemM.dateDebut}" >
+                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                            </h:outputText>
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Date de Fin">
+                                        <center>
+                                            <h:outputText value="#{itemM.dateFin}" >
+                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                            </h:outputText>
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Actions">
+                                        <center>
+                                            <p:commandButton title="#{msg['core.components.datatable.operations.edit']}"
+                                                             action="#{marathonCrudBean.setEntity(itemM)}" styleClass="iconBtn"
+                                                             icon="fa fa-edit" update="@(.marathonField)" process="@(.marathons)"/>
+                                            <p:commandButton title="#{msg['core.components.datatable.operations.delete']}"
+                                                             icon="fa fa-remove" action="#{marathonCrudBean.delete(itemM)}"
+                                                             process="@(.marathons)" update="@(.marathons)" styleClass="iconBtn">
+                                                <p:confirm header="Confirmation" icon="ui-icon-alert" 
+                                                           message="#{msg['core.components.datatable.operations.delete.confirmmessage']}"/>
+                                            </p:commandButton>
+                                        </center>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </p:fieldset>
+                    </p:tab>
+
+                    <!--                    Equipes-->
+                    <p:tab title="#{msgm['PARAMETRAGE.TAB2.TITLE']}" titleStyleClass="tabStyle">
+                        <h:form>
+                            <p:fieldset>
+                                <!--                                <p:growl id="growl2" showDetail="true" sticky="true" life="10000" />-->
+                                <h:panelGrid columns="2">
+                                    <p:outputLabel value="Nom" for="nomEq"/>
+                                    <p:inputText id="nomEq" required="true" value="#{equipeCrudBean.entity.nom}"/>
+
+                                    <p:outputLabel value="Catégorie équipe" for="catEq"/>
+                                    <p:selectOneMenu id="catEq" value="#{equipeCrudBean.entity.categorieEquipe}"
+                                                     required="true" converter="omnifaces.SelectItemsConverter"
+                                                     autoWidth="false" style="width: 132px">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{equipeCrudBean.categories}" var="catEq" 
+                                                       itemLabel="#{catEq.libelle}" itemValue="#{catEq}"/>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Chemin du dossier" for="chemin"/>
+                                    <p:inputText id="chemin" value="#{equipeCrudBean.entity.chemin}"/>    
+                                    <p:outputLabel value="Utilisateur" for="user"/>
+                                    <p:selectOneMenu id="user" value="#{equipeCrudBean.entity.user}"
+                                                     required="true" converter="omnifaces.SelectItemsConverter"
+                                                     autoWidth="false" style="width: 132px">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{equipeCrudBean.users}" var="userItem" 
+                                                       itemLabel="#{userItem.username}" itemValue="#{userItem}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Participants"/>
+                                    <p:commandButton icon="fa fa-plus" onclick="PF('participantDlg').show()"
+                                                     immediate="true" styleClass="iconBtn"/>
+                                </h:panelGrid>
+
+                                <p:outputPanel id="participants" styleClass="participants" style="margin-top: 5px">
+                                    <p:dataTable var="itemP" rows="5" emptyMessage="Pas de participants pour cette équipe" 
+                                                 value="#{equipeCrudBean.entity.participants}" >
+                                        <p:column headerText="Nom">
+                                            <center>
+                                                <h:outputText value="#{itemP.nom}"/>
+                                            </center>
+                                        </p:column>
+                                        <p:column headerText="Prénom">
+                                            <center>
+                                                <h:outputText value="#{itemP.prenom}"/>
+                                            </center>
+                                        </p:column>
+                                        <p:column headerText="Niveau d'étude">
+                                            <center>
+                                                <h:outputText value="#{itemP.niveauEtude}"/>
+                                            </center>
+                                        </p:column>
+                                        <p:column headerText="Action">
+                                            <center>
+                                                <p:commandButton icon="fa fa-minus" process="@(.participants)" 
+                                                                 update="@(.participants)" styleClass="iconBtn" title="Retirer participant">
+                                                    <p:collector value="#{itemP}" removeFrom="#{equipeCrudBean.entity.participants}" 
+                                                                 unique="true"/>
+                                                </p:commandButton>
+                                            </center>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:outputPanel>
+                                <h:panelGrid columns="3">
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN1']}" icon="fa fa-save"
+                                                     action="#{equipeCrudBean.add()}" update="@form"
+                                                     disabled="#{equipeCrudBean.disableSave}" process="@form"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN2']}" icon="fa fa-ban"
+                                                     action="#{equipeCrudBean.init()}" 
+                                                     update="@form" immediate="true" process="@this"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN3']}" icon="fa fa-edit"
+                                                     disabled="#{equipeCrudBean.disableEdit}"
+                                                     action="#{equipeCrudBean.update()}" update="@form" process="@form"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+
+                        <p:dialog draggable="false" widgetVar="participantDlg" responsive="true" showEffect="fade"
+                                  width="700px" id="participDlg" header="Ajout d'un nouveau participant" hideEffect="slide">
+                            <h:form>
+                                <p:outputPanel id="participant-field">
+                                    <h:panelGrid columns="2" cellspacing="5">
+                                        <p:outputLabel value="Nom" for="nomP"/>
+                                        <p:inputText id="nomP" required="true" value="#{equipeCrudBean.participant.nom}"/>
+
+                                        <p:outputLabel value="Prénom" for="prenomP"/>
+                                        <p:inputText id="prenomP" required="true" value="#{equipeCrudBean.participant.prenom}"/>
+
+                                        <p:outputLabel value="Niveau d'étude" for="niveauEtude"/>
+                                        <p:inputText id="niveauEtude" required="true" value="#{equipeCrudBean.participant.niveauEtude}"/>
+
+                                        <p:outputLabel value="Etablissement" for="etablissement"/>
+                                        <p:inputText id="etablissement" required="true" value="#{equipeCrudBean.participant.etablissement}"/>
+
+                                        <p:commandButton value="Enregistrer" icon="fa fa-save" ajax="true"
+                                                         action="#{equipeCrudBean.renitParticipant()}" 
+                                                         update="participant-field @(.participants)" process="participant-field @parent">
+                                            <p:collector value="#{equipeCrudBean.participant}" addTo="#{equipeCrudBean.entity.participants}" 
+                                                         unique="false"/>
+                                        </p:commandButton>
+                                        <p:commandButton value="Annuler" icon="fa fa-ban" type="reset" immediate="true"/>
+                                    </h:panelGrid>
+                                </p:outputPanel>
+                            </h:form>
+                        </p:dialog>
+                    </p:tab>
+
+                    <!--                    Test-->
+                    <p:tab title="Tests" titleStyleClass="tabStyle">
+                        <h:form id="test-form">
+                            <p:fieldset styleClass="testField" legend="Nouveau Test" toggleable="true" toggleSpeed="500"
+                                        collapsed="true">
+                                <!--                                <p:growl id="growl3" showDetail="true" sticky="true" life="10000" />-->
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <p:outputLabel value="Libellé" for="libelleT"/>
+                                    <p:inputText id="libelleT" required="true" requiredMessage="Le libellé du test est obligatoire."
+                                                 value="#{testCrudBean.entity.libelle}"/>
+
+                                    <p:outputLabel value="Pré-requis" for="prerequis"/>
+                                    <p:inputTextarea id="prerequis" required="true" requiredMessage="Le pré-requis est
+                                                     obligatoire!" cols="55" value="#{testCrudBean.entity.prerequis}"/>
+
+                                    <p:outputLabel value="Date" for="date"/>
+                                    <p:inputMask mask="99/99/9999" id="date" required="true" requiredMessage="La date du test
+                                                 est obligatoire!" value="#{testCrudBean.entity.dateTest}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </p:inputMask>
+
+                                    <p:outputLabel value="Heure début" for="heureDebut"/>
+                                    <p:calendar id="heureDebut" pattern="HH:mm:ss" timeOnly="true" requiredMessage="Heure de début 
+                                                de test obligatoire!" value="#{testCrudBean.entity.heureDebut}">
+                                        <f:convertDateTime pattern="HH:mm:ss" type="time"/>
+                                    </p:calendar>
+
+                                    <p:outputLabel value="Heure fin" for="heureFin"/>
+                                    <p:calendar id="heureFin" pattern="HH:mm:ss" timeOnly="true" required="true" label="Définir le temps"
+                                                requiredMessage="Heure de fin de test obligatoire!" value="#{testCrudBean.entity.heureFin}">
+                                        <f:convertDateTime pattern="HH:mm:ss" type="time"/>
+                                    </p:calendar>
+
+                                    <p:outputLabel value="Marathon" for="mar"/>
+                                    <p:selectOneMenu id="mar" value="#{testCrudBean.entity.marathon}"
+                                                     required="true" converter="omnifaces.SelectItemsConverter"
+                                                     autoWidth="false" style="width: 132px">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{marathonCrudBean.marathons}" var="mar" 
+                                                       itemLabel="Marathon - #{mar.libelle}" itemValue="#{mar}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Catégorie équipe" for="catEq"/>
+                                    <p:selectOneMenu id="catEq" value="#{testCrudBean.entity.categorieEquipe}"
+                                                     required="true" converter="omnifaces.SelectItemsConverter"
+                                                     autoWidth="false" style="width: 132px">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{equipeCrudBean.categories}" var="catEq" 
+                                                       itemLabel="#{catEq.libelle}" itemValue="#{catEq}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Test final" for="finalTest"/>
+                                    <p:selectBooleanCheckbox id="finalTest" value="#{testCrudBean.entity.testFinal}"/>
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="3">
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN1']}" icon="fa fa-save"
+                                                     action="#{testCrudBean.add()}" update="@form @(.tests)"
+                                                     disabled="#{testCrudBean.disableSave}" process="@form"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN2']}" icon="fa fa-ban"
+                                                     action="#{testCrudBean.init()}" 
+                                                     update="@form" immediate="true" process="@this"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN3']}" icon="fa fa-edit"
+                                                     disabled="#{testCrudBean.disableEdit}"
+                                                     action="#{testCrudBean.update()}" update="@form @(.tests)" process="@form"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+
+                        <p:fieldset legend="Liste des Tests" toggleable="true" toggleSpeed="500">
+                            <h:form>
+                                <p:dataTable var="item" value="#{testCrudBean.model}" id="tests" styleClass="tests"
+                                             reflow="true" rows="5" paginator="true" lazy="true" rowKey="#{item.code}"
+                                             emptyMessage="Liste vide." sortBy="#{item.code}" sortOrder="descending">
+                                    <p:column headerText="Libellé">
+                                        <center>
+                                            <h:outputText value="#{item.libelle}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Marathon">
+                                        <center>
+                                            <h:outputText value="Marathon-#{item.marathon.libelle}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Catégorie d'équipe">
+                                        <center>
+                                            <h:outputText value="#{item.categorieEquipe.libelle}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Date du test">
+                                        <center>
+                                            <h:outputText value="#{item.dateTest}" >
+                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                            </h:outputText>
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Heure de début">
+                                        <center>
+                                            <h:outputText value="#{item.heureDebut}" >
+                                                <f:convertDateTime pattern="HH:mm"/>
+                                            </h:outputText>
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Heure de fin">
+                                        <center>
+                                            <h:outputText value="#{item.heureFin}" >
+                                                <f:convertDateTime pattern="HH:mm"/>
+                                            </h:outputText>
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Test final">
+                                        <center>
+                                            <h:outputText value="#{item.testFinal1}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Actions">
+                                        <center>
+                                            <p:commandButton title="#{msg['core.components.datatable.operations.edit']}"
+                                                             action="#{testCrudBean.setEntity(item)}" styleClass="iconBtn"
+                                                             icon="fa fa-edit" update="@(.testField)" process="@(.tests)"/>
+                                            <p:commandButton title="#{msg['core.components.datatable.operations.delete']}"
+                                                             icon="fa fa-remove" action="#{testCrudBean.delete(item)}"
+                                                             process="@(.tests)" update="@(.tests)" styleClass="iconBtn">
+                                                <p:confirm header="Confirmation" icon="ui-icon-alert" 
+                                                           message="#{msg['core.components.datatable.operations.delete.confirmmessage']}"/>
+                                            </p:commandButton>
+                                        </center>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </p:fieldset>
+                    </p:tab>
+
+                    <!--                    Exercices-->
+                    <p:tab title="Exercices" titleStyleClass="tabStyle">
+                        <h:form id="exo-form">
+                            <p:fieldset styleClass="exoField" legend="Nouveau exercie" toggleable="true" toggleSpeed="500"
+                                        collapsed="true">
+                                <!--                                <p:growl id="growl4" showDetail="true" sticky="true" life="10000" />-->
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <p:outputLabel value="Titre" for="titre"/>
+                                    <p:inputText id="titre" required="true" requiredMessage="Le titre est obligatoire."
+                                                 value="#{exerciceCrudBean.entity.titre}"/>
+
+                                    <!--                                    <p:outputLabel value="Énoncé" for="enonce"/>
+                                                                        <p:inputTextarea id="enonce" required="true" requiredMessage="Saisir l'énoncé." 
+                                                                                         cols="55" value="{exerciceCrudBean.entity.enonce}"/>-->
+                                    <p:outputLabel value="Résumé" for="resume"/>
+                                    <p:inputTextarea id="resume" required="true" requiredMessage="Saisir le résumé." 
+                                                     cols="55" value="#{exerciceCrudBean.entity.resume}"/>
+                                    <p:outputLabel value="Solution" for="solution"/>
+                                    <p:inputText id="solution" required="true" requiredMessage="Saisir la solution."
+                                                 value="#{exerciceCrudBean.entity.solution}"/>
+
+                                    <p:outputLabel value="Indication" for="indication"/>
+                                    <p:inputTextarea id="indication" cols="55" rows="2" value="#{exerciceCrudBean.entity.indication}"/>
+
+                                    <p:outputLabel value="Test de l'exercice" for="testItem"/>
+                                    <p:selectOneMenu id="testItem" value="#{exerciceCrudBean.entity.test}"
+                                                     required="true" converter="omnifaces.SelectItemsConverter"
+                                                     autoWidth="false" style="width: 132px">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{testCrudBean.tests}" var="test" 
+                                                       itemLabel="#{test.libelle}(Marathon-#{test.marathon.libelle})" itemValue="#{test}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Points" for="pts"/>
+                                    <p:inputText id="pts" required="true" requiredMessage="Les points de l'exercice sont
+                                                 obligatoire." value="#{exerciceCrudBean.entity.point}"/>
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="3">
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN1']}" icon="fa fa-save"
+                                                     action="#{exerciceCrudBean.add()}" update="@form @(.exos)"
+                                                     disabled="#{exerciceCrudBean.disableSave}" process="@form"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN2']}" icon="fa fa-ban"
+                                                     action="#{exerciceCrudBean.init()}" 
+                                                     update="@form" immediate="true" process="@this"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN3']}" icon="fa fa-edit"
+                                                     disabled="#{exerciceCrudBean.disableEdit}"
+                                                     action="#{exerciceCrudBean.update()}" update="@form @(.exos)" process="@form"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+
+                        <p:fieldset legend="Liste des exercices" toggleable="true" toggleSpeed="500">
+                            <h:form>
+                                <p:dataTable var="item" value="#{exerciceCrudBean.model}" id="exos" styleClass="exos"
+                                             reflow="true" rows="5" paginator="true" lazy="true" rowKey="#{item.code}"
+                                             emptyMessage="Liste vide." sortBy="#{item.code}" sortOrder="descending">
+                                    <p:column headerText="Code">
+                                        <center>
+                                            <h:outputText value="#{item.code}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Test">
+                                        <center>
+                                            <h:outputText value="#{item.test.libelle}(Marathon-#{item.test.marathon.libelle})" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Titre de l'exercie">
+                                        <center>
+                                            <h:outputText value="#{item.titre}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Indication">
+                                        <center>
+                                            <h:outputText value="#{item.indication}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Solution">
+                                        <center>
+                                            <h:outputText value="#{item.solution}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Points" style="width: 70px">
+                                        <center>
+                                            <h:outputText value="#{item.point}pts" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Actions">
+                                        <center>
+                                            <p:commandButton title="#{msg['core.components.datatable.operations.edit']}"
+                                                             action="#{exerciceCrudBean.setEntity(item)}" styleClass="iconBtn"
+                                                             icon="fa fa-edit" update="@(.exoField)" process="@(.exos)"/>
+                                            <p:commandButton title="#{msg['core.components.datatable.operations.delete']}"
+                                                             icon="fa fa-remove" action="#{exerciceCrudBean.delete(item)}"
+                                                             process="@(.exos)" update="@(.exos)" styleClass="iconBtn">
+                                                <p:confirm header="Confirmation" icon="ui-icon-alert" 
+                                                           message="#{msg['core.components.datatable.operations.delete.confirmmessage']}"/>
+                                            </p:commandButton>
+                                        </center>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </p:fieldset>
+                    </p:tab>
+
+                    <!--                    Marathon/Equipe-->
+                    <p:tab title="Marathon/Equipe" titleStyleClass="tabStyle">
+                        <h:form id="eq-mar-form">
+                            <p:fieldset styleClass="marEqField">
+                                <!--                                <p:growl id="growl5" showDetail="true" sticky="true" life="10000" />-->
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <p:outputLabel value="Marathon" for="mar"/>
+                                    <p:selectOneMenu id="mar" value="#{marathonEquipeBean.marathon}"
+                                                     required="true" converter="omnifaces.SelectItemsConverter"
+                                                     autoWidth="false" style="width: 132px">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{marathonCrudBean.marathons}" var="mar" 
+                                                       itemLabel="Marathon - #{mar.libelle}" itemValue="#{mar}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Equipe" for="eq"/>
+                                    <p:selectOneMenu id="eq" value="#{marathonEquipeBean.equipe}"
+                                                     required="true" converter="omnifaces.SelectItemsConverter"
+                                                     autoWidth="false" style="width: 132px">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{equipeCrudBean.equipes}" var="eqp" 
+                                                       itemLabel="#{eqp.nom} (#{eqp.categorieEquipe.libelle})" itemValue="#{eqp}"/>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Autorisé" for="authorized"/>
+                                    <p:selectBooleanCheckbox id="authorized" required="true" 
+                                                             value="#{marathonEquipeBean.entity.authorized}"/>
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="3">
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN1']}" icon="fa fa-save"
+                                                     action="#{marathonEquipeBean.add()}" update="@form @(.marEq)"
+                                                     disabled="#{marathonEquipeBean.disableSave}" process="@form"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN2']}" icon="fa fa-ban"
+                                                     action="#{marathonEquipeBean.init()}" 
+                                                     update="@form" immediate="true" process="@this"/>
+                                    <p:commandButton value="#{msgm['PARAMETRAGE.TAB1.BTN3']}" icon="fa fa-edit"
+                                                     disabled="#{marathonEquipeBean.disableEdit}"
+                                                     action="#{marathonEquipeBean.update()}" update="@form @(.marEq)" process="@form"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+
+                        <p:fieldset>
+                            <h:form>
+                                <p:dataTable var="item" value="#{marathonEquipeBean.model}" id="marEq" styleClass="marEq"
+                                             reflow="true" rows="5" paginator="true" lazy="true" rowKey="#{item.marathonEquipePK}"
+                                             emptyMessage="Liste vide." sortBy="#{item.marathonEquipePK}" sortOrder="descending">
+                                    <p:column headerText="Marathon" filterBy="#{item.marathon.libelle}">
+                                        <center>
+                                            <h:outputText value="Marathon - #{item.marathon.libelle}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Equipe">
+                                        <center>
+                                            <h:outputText value="#{item.equipe.nom}(#{item.equipe.categorieEquipe.libelle})" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Nombre Jockers">
+                                        <center>
+                                            <h:outputText value="#{item.nombreJockers}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Autorisé" style="width: 70px">
+                                        <center>
+                                            <h:outputText value="#{item.authorized1}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Actions">
+                                        <center>
+                                            <p:commandButton title="#{msg['core.components.datatable.operations.edit']}"
+                                                             action="#{marathonEquipeBean.setEntity(item)}" styleClass="iconBtn"
+                                                             icon="fa fa-edit" update="@(.marEqField)" process="@(.marEq)"/>
+                                            <p:commandButton title="#{msg['core.components.datatable.operations.delete']}"
+                                                             icon="fa fa-remove" action="#{marathonEquipeBean.delete(item)}"
+                                                             process="@(.marEq)" update="@(.marEq)" styleClass="iconBtn">
+                                                <p:confirm header="Confirmation" icon="ui-icon-alert" 
+                                                           message="#{msg['core.components.datatable.operations.delete.confirmmessage']}"/>
+                                            </p:commandButton>
+                                        </center>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </p:fieldset>
+                    </p:tab>
+                </p:tabView>
+            </ui:define>
+            <!--            <ui:include src="/marathon/pages/dialogs/participantDlg.xhtml"/>-->
+        </ui:composition>
+
+    </body>
+</html>

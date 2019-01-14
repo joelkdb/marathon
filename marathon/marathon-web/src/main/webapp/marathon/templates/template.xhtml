@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>
+            <ui:insert name="title" />
+        </title>
+        <h:outputStylesheet library="css" name="style.css" />
+    </h:head>
+    <h:body class="ui-grid ui-grid-responsive">
+        <f:view locale="#{defineLang.locale}">
+            <p:growl id="msgs" showDetail="true" life="5000" globalOnly="true">
+                <p:autoUpdate/>
+            </p:growl>
+            <ui:insert name="header">
+                <div class="ui-grid-row topbar" id="topbar">
+                    <div class="ui-grid-col-9">
+                        <p:graphicImage library="images" name="logo.png" width="40" styleClass="logo" height="40" />
+                        <p:outputLabel value="MARATHON - #{marathonBean.actual.libelle}" styleClass="app-name" 
+                                       style="margin-left: 15px"/>
+                    </div>
+                    <div class="ui-grid-col-3 ui-grid-responsive">
+                        <h:form>
+                            <p:menubar >
+                                <p:submenu label="#{msgm['TEMPLATE.LANG']}">
+                                    <p:menuitem value="#{msgm['TEMPLATE.FR']}" update="@all" icon="fa fa-language"
+                                                actionListener="#{defineLang.setFrenchLocale()}" ajax="true"
+                                                onsuccess="window.location.reload();"/>
+                                    <p:menuitem value="#{msgm['TEMPLATE.EN']}" update="@all" icon="fa fa-language"
+                                                actionListener="#{defineLang.setEnglishLocale()}" ajax="true"
+                                                onsuccess="window.location.reload();"/>
+                                </p:submenu>
+                                <!--                                Partie à afficher qu'aux équipes -->
+                                <p:submenu label="#{msgm['TEMPLATE.TEST']}"
+                                           rendered="#{applicationBean.canAccessEquipe()}">
+                                    <p:menuitem value="#{msgm['TEMPLATE.INDICATIONS']}" icon="fa fa-book"
+                                                outcome="/marathon/pages/test/indication"/>
+                                    <p:menuitem value="#{msgm['TEMPLATE.EXERCICES']}" icon="fa fa-mortar-board"
+                                                outcome="/index"/>
+                                    <p:menuitem value="#{msgm['TEMPLATE.PARTICIPANTS']}" icon="fa fa-users"
+                                                outcome="/marathon/pages/test/participant"/>
+                                    <p:menuitem value="#{msgm['TEMPLATE.CLASSEMENT']}" icon="fa fa-list-ol"
+                                                outcome="/marathon/pages/test/classement"/>
+                                </p:submenu>
+                                <!--                                Partie à afficher qu'aux équipes -->
+                                <!--                                       Partie à afficher qu'à l'administration-->
+                                <p:submenu label="#{msgm['TEMPLATE.ADMINISTRATION']}" 
+                                           rendered="#{applicationBean.canAccessAdmin()}">
+                                    <p:menuitem value="#{msgm['TEMPLATE.UTILSATEURS']}" icon="fa fa-users" 
+                                                outcome="/marathon/templates/users/list" rendered="#{applicationBean.canAccessUsers()}"/>
+                                    <p:menuitem value="#{msgm['TEMPLATE.ROLES']}" outcome="/marathon/templates/roles/list"
+                                                rendered="#{applicationBean.canAccessRoles()}"
+                                                icon="fa fa-user-secret"/>
+                                    <p:menuitem value="#{msgm['TEMPLATE.JOURNAL']}" outcome="/marathon/templates/logs/list"
+                                                rendered="#{applicationBean.canAccessLogs()}"
+                                                icon="fa fa-file-text"/>
+                                    <p:menuitem value="#{msgm['TEMPLATE.MARATHON']}" icon="fa fa-code" 
+                                                outcome="/marathon/pages/parametrage/parametrage"/>
+                                </p:submenu>
+                                <!--                                       Partie à afficher qu'à l'administration-->
+
+                                <!--                                Partie à afficher qu'aux spectateurs-->
+                                <c:if test="#{applicationBean.canAccessSpectator()}">
+                                    <p:submenu label="#{msgm['TEMPLATE.RESULTS']}" >
+                                        <p:menuitem value="#{msgm['TEMPLATE.TESTS']}" icon="fa fa-bar-chart"
+                                                    outcome="/marathon/pages/resultat/resultat-test"/>
+                                        <p:menuitem value="#{msgm['TEMPLATE.MARATHON']}" icon="fa fa-pie-chart"
+                                                    outcome="/marathon/pages/resultat/resultat-marathon"/>
+                                    </p:submenu>
+                                </c:if>
+                                <!--                                Partie à afficher qu'aux spectateurs-->
+
+                                <p:submenu label="#{msgm['TEMPLATE.AUTRES']}">
+                                    <p:menuitem value="#{msgm['TEMPLATE.APROPOS']}" process="@this" 
+                                                icon=" fa fa-exclamation" outcome="/marathon/pages/autres/apropos"/>
+                                    <p:menuitem value="#{msgm['TEMPLATE.DECONNEXION']}" icon="fa fa-power-off"
+                                                action="#{loginBean.logout()}"/>
+                                </p:submenu>
+                            </p:menubar>
+                        </h:form>
+                    </div>
+                </div>
+            </ui:insert>
+            <ui:insert name="container">
+                <div class="ui-grid-row container">
+                    <div class="ui-grid-col-2 ui-grid-responsive">
+                        <p:panelGrid columns="1" style="width: 100%">
+                            <h3 style="text-align: center">#{userBean.getFirstRole()}</h3>
+                            <h:form id="left-form">
+                                <p:graphicImage library="images" name="profil.png" width="100%" height="100%" cache="false"
+                                                rendered="#{applicationBean.canAccessAdmin()}" styleClass="roundedImage"
+                                                style="margin-left: auto;margin-right: auto;"/>
+                                <p:graphicImage library="images" name="spect.png" width="100%" height="100%" cache="false"
+                                                rendered="#{applicationBean.canAccessSpectator() or applicationBean.canAccessEquipe()}"
+                                                style="margin-left: auto;margin-right: auto;"/>
+                                <p:graphicImage library="images" name="eq2.png" width="100%" height="275" cache="false"
+                                                rendered="#{applicationBean.canAccessEquipe()}" styleClass="roundedImage"
+                                                style="margin-left: auto;margin-right: auto;"/>
+
+                                <h2 style="text-align: center">#{userBean.currentUser.username}</h2>
+                                <!--                                       Test si l'utilisateur connecté est du rôle équipe-->
+                                <!--                                On n'affiche cette partie qu'aux équipe qui vont concourirent-->
+                                <c:if test="#{testBean.isATestAvailable() and applicationBean.canAccessEquipe()}">
+                                    <p:panelGrid columns="1" style="text-align: center;width: 100%;">
+                                        <h2>#{applicationBean.teamCategory}</h2>
+                                        <p:rating value="#{testBean.marathonEquipe.nombreJockers}" cancel="false" readonly="true" 
+                                                  id="jokers" stars="#{testBean.marathonEquipe.nombreJockers}"/>
+                                        <p:outputLabel value="#{exerciceBean.remaining}" id="remaining"
+                                                       title="#{msgm['TEMPLATE.REMAINING']}" >
+                                            <f:convertDateTime type="time" pattern="HH:mm:ss" />
+                                        </p:outputLabel>
+                                        <p:progressBar displayOnly="true" labelTemplate="{value}%" id="pgBar" styleClass="pgBar"
+                                                       value="#{exerciceBean.calculateScorePercent()*100}" style="margin-bottom: 20px"/>
+                                    </p:panelGrid>
+                                    <p:poll ignoreAutoUpdate="true" process="@this remaining" interval="1" id="poll"
+                                            listener="#{exerciceBean.calculateRemainingTime(false)}"
+                                            update="@this remaining"/>
+                                </c:if>
+                            </h:form>
+                        </p:panelGrid>
+                    </div>
+                    <div class="ui-grid-col-10 ui-grid-responsive">
+                        <p:panelGrid columns="1" style="width: 100%">
+                            <ui:insert name="title" />
+                            <h:form id="right-form" enctype="multipart/form-data">
+                                <p:messages globalOnly="true" closable="true" >
+                                    <p:autoUpdate />
+                                </p:messages>
+                                <ui:insert name="container-right-ssm">
+                                    <ui:insert name="container-right" />
+                                </ui:insert>
+                            </h:form>
+                        </p:panelGrid>
+                    </div>
+                </div>
+            </ui:insert>
+            <ui:insert name="script">
+                <h:outputScript name="jquery/jquery.js" library="primefaces"/>
+            </ui:insert>
+            <!--            <ui:insert name="ajaxStatus">
+                            <p:ajaxStatus style="position:fixed;right:2px;bottom:2px">
+                                <f:facet name="start">
+                                    <i class="fa fa-spinner fa-pulse fa-3x ajax-loader " style="color:dodgerblue; " aria-hidden="true"></i>
+                                </f:facet>
+                                <f:facet name="complete">
+                                    <h:outputText value="" />
+                                </f:facet>
+                            </p:ajaxStatus>
+                        </ui:insert>-->
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <h:form>
+                    <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" 
+                                     process="@this"
+                                     style="left:15px;"/>
+                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" 
+                                     process="@this" style="float: right"/>
+                </h:form>
+            </p:confirmDialog>
+        </f:view>
+    </h:body>
+</html>

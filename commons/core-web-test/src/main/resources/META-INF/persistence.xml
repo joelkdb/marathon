@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="commonsPU" transaction-type="JTA">
+    <jta-data-source>java:app/jdbc/commons</jta-data-source>
+    <class>com.webapp.commons.core.entities.LogCategory</class>
+    <class>com.webapp.commons.core.entities.LogEvent</class>
+    <class>com.webapp.commons.core.entities.LogLevel</class>
+    <class>com.webapp.commons.core.entities.Permission</class>
+    <class>com.webapp.commons.core.entities.PermissionCategory</class>
+    <class>com.webapp.commons.core.entities.Role</class>
+    <class>com.webapp.commons.core.entities.Sequence</class>
+    <class>com.webapp.commons.core.entities.User</class>
+    <class>com.webapp.commons.core.entities.UserSession</class>
+    <class>com.webapp.commons.core.entities.Variable</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="create"/>
+    </properties>
+  </persistence-unit>
+</persistence>

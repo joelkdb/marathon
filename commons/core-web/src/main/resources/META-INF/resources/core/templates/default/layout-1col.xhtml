@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <ui:insert name="head">
+            <title>
+                <ui:insert name="title">
+                    [Titre de page]
+                </ui:insert>
+                - <h:outputText value="#{applicationBean.applicationDisplayName}" />
+            </title>
+            <!--<h:outputStylesheet library="core" name="font-awesome/css/font-awesome.min.css" />
+            <h:outputStylesheet library="core2" name="fontawesome/css/font-awesome-min.css" />-->
+            <h:outputStylesheet library="core" name="templates/default/css/styles.css" />
+        </ui:insert>
+        <ui:insert name="ressources">
+            <!--[autre css ; java script ...]-->
+        </ui:insert>
+    </h:head>
+    <h:body>
+        <f:view>
+            <h:outputScript library="omnifaces" name="fixviewstate.js" target="head" />
+            <ui:insert name="metadata"/>
+
+            <!-- menu de navigation top -->
+            <div class="ui-g page">
+                <div class="ui-g-12">
+                    <h:form id="navbarForm">
+                        <p:menubar>
+                            <ui:include src="#{applicationBean.menuFilePath}"/>
+
+                            <f:facet name="options">
+                                <p:splitButton value="#{applicationBean.currentUser.username}" icon="fa fa-user">
+                                    <p:menuitem value="Déconnexion" action="#{loginBean.logout()}" icon="fa fa-sign-out" />
+                                </p:splitButton>
+                            </f:facet>
+                        </p:menubar>
+                    </h:form>
+                </div><!-- fin menu de navigation top -->
+
+                <div class="ui-g-12 page-content">
+                    <div class="page-content-inner">
+                        <h2>
+                            <ui:insert name="title">[Title]</ui:insert>
+                        </h2>
+
+                        <p:messages id="messages" showDetail="true" showSummary="true" closable="true" >
+                            <p:autoUpdate/>
+                        </p:messages>
+
+                        <!--<p:well size="sm">
+                            <ui:insert name="description">
+                                Bienvenue sur la page.
+                            </ui:insert>
+                        </p:well>-->
+
+                        <ui:insert name="content">
+                            Contenu de la page...
+                        </ui:insert>
+                    </div>
+                </div>
+                <div class="ui-g-12 footer">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <p:link value="Mediasoft" href="http://www.mediasofthome.net"/>, 
+                            Copyright © 2016<br/>
+                            Tout droit réservé.
+                        </div>
+                        <div class="ui-g-12 ui-md-6 ui-lg-6">
+                            <h:outputText value="#{applicationBean.applicationDisplayName} 0.1.0"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ui:insert name="script">
+                <h:outputScript name="jquery/jquery.js" library="primefaces"/>
+            </ui:insert>
+            <ui:insert name="ajaxStatus">
+                <p:ajaxStatus style="position:fixed;right:2px;bottom:2px">
+                    <f:facet name="start">
+                        <i class="fa fa-spinner fa-pulse fa-3x ajax-loader " style="color:dodgerblue; " aria-hidden="true"></i>
+                    </f:facet>
+                    <f:facet name="complete">
+                        <h:outputText value="" />
+                    </f:facet>
+                </p:ajaxStatus>
+            </ui:insert>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <h:form>
+                    <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" 
+                                     process="@this"
+                                     style="left:15px;"/>
+                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" 
+                                     process="@this" style="float: right"/>
+                </h:form>
+            </p:confirmDialog>
+
+        </f:view>
+    </h:body>
+</html>
+

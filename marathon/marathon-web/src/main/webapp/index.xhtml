@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./marathon/templates/template.xhtml">
+
+            <ui:define name="title">
+                #{msgm['TESTEXERCICE.TITLE']}
+            </ui:define>
+
+            <ui:define name="container-right">
+                <c:if test="#{testBean.isATestAvailable()}">
+                    <h2>
+                        #{testBean.test.libelle} - #{testBean.test.testFinal ? 
+                          msgm['TESTINDICATION.FINAL'] : msgm['TESTINDICATION.ECHAUFFEMENT']}
+                    </h2>
+                    <p:tabView activeIndex="#{exerciceBean.activeIndex}" dynamic="true" id="exosTabView">
+                        <!-- Permet d'actualiser l'index courant -->
+                        <p:ajax event="tabChange" process="@this" ignoreAutoUpdate="true"/>
+                        <!-- Utilisé à cause de varStatus offert dans la jsp sinon on utilisera celui du tabView de primefaces-->
+                        <c:forEach items="#{exerciceBean.dataList}" var="eqExo" varStatus="eqExoStats">
+                            <p:tab title="#{eqExo.exercice.titre} - #{eqExo.exercice.point} pts 
+                                   #{exerciceBean.isSolutionCorrect2(eqExo)?msgm['TESTEXERCICE.RESOLUEXO']:''}"
+                                   titleStyleClass="tabStyle" id="tab#{eqExoStats.index}">
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <!-- Enoncé des exercies -->
+                                    <c:forEach items="#{parametreBean.getLines(eqExo.exercice.resume)}" var="line">
+                                        #{line} <br/>
+                                    </c:forEach>
+<!--                                    <h:outputText value="{eqExo.exercice.enonce}"/> -->
+                                    <!-- Connaître le nombre de joker q'un exercice peut rapporter -->
+                                    <p:rating value="#{exerciceBean.findNbJokersToWin(eqExo.exercice)}" cancel="false" 
+                                              readonly="true" />
+
+                                    <!-- Les indication par raport à un exercice si un joker est activé -->
+                                    <c:if test="#{eqExo.jockerActif}">
+                                        <p:outputLabel value="#{msgm['TEMPLATE.INDICATIONS']}" />
+                                        <c:forEach items="#{parametreBean.getLines(eqExo.exercice.indication)}" var="line">
+                                            #{line} <br/>
+                                        </c:forEach>
+                                    </c:if>
+
+                                    <!-- Les pieces jointes des exercices à récupérer -->
+                                    <c:forEach items="#{eqExo.exercice.exercicePieceJointes}" var="piece">
+                                        <p:outputLabel value="{msgm['TESTEXERCICE.PIECES']}" />
+                                        <a href="./piece-jointe/#{piece.pieceJointe.nom}" 
+                                           title="#{msgm['TESTEXERCICE.UPLOADDESC']}">#{piece.pieceJointe.nom}</a>
+                                    </c:forEach>
+
+                                    <!-- Les langages de programmation -->
+                                    <p:outputLabel value="#{msgm['TESTEXERCICE.CODELANG']}"/>
+                                    <p:selectOneRadio value="#{eqExo.nomLangage}" layout="responsive" columns="2"
+                                                      disabled="#{exerciceBean.isExerciceDisabled(eqExo)}" required="true"
+                                                      requiredMessage="#{msgm['MSG_REQUIRED']}" id="langage#{eqExoStats.index}">
+                                        <f:selectItems value="#{langageBean.langages}" var="l" itemLabel="#{l}" itemValue="#{l}"/>
+                                    </p:selectOneRadio>
+                                    <p:message for="langage#{eqExoStats.index}" id="langage#{eqExoStats.index}Msg"/>
+
+                                    <!-- Chargement de code source de résolution des exercices -->
+                                    <p:outputLabel value="#{msgm['TESTEXERCICE.CODE']}"/>
+                                    <!--                                    <p:inputTextarea placeholder="{msgm['TESTEXERCICE.INSERERCODE']}" autoResize="true" 
+                                                                                         scrollHeight="100" validator="codeRequisValid" id="code{eqExoStats.index}" 
+                                                                                         styleClass="afterValider" cols="35" disabled="{exerciceBean.isExerciceDisabled(eqExo)}"
+                                                                                         value="{exerciceBean.isSolutionCorrect(eqExo)?
+                                                                                                  msgm['TESTEXERCICE.RESOLU']:eqExo.codeSourceEnvoye}"/>
+                                                                        <p:message for="code{eqExoStats.index}" id="code{eqExoStats.index}Msg" />-->
+                                    <p:fileUpload value="#{exerciceBean.uploadedFile}" mode="simple" skinSimple="simple"
+                                                  required="true" requiredMessage="Sélectionner un fichier" id="file#{eqExoStats.index}"
+                                                  allowTypes="/(\.|\/)(java|pas|js|php|c|cpp|cs|py)$/" />
+                                    <p:message for="file#{eqExoStats.index}" id="file#{eqExoStats.index}Msg"/>
+
+                                    <!-- Résultat de l'exercice -->
+                                    <p:outputLabel value="#{msgm['TESTEXERCICE.RESULTAT']}"/>
+                                    <p:inputText placeholder="#{msgm['TESTEXERCICE.INSERERRESULTAT']}"
+                                                 id="resultat#{eqExoStats.index}" maxlength="200"
+                                                 requiredMessage="#{msgm['MSG_REQUIRED']}" 
+                                                 label="#{eqExo.exercice.code}"
+                                                 disabled="#{exerciceBean.isExerciceDisabled(eqExo)}"
+                                                 value="#{exerciceBean.isSolutionCorrect2(eqExo)?
+                                                          msgm['TESTEXERCICE.RESOLU']:eqExo.solutionEnvoye}"/>
+                                    <p:message for="resultat#{eqExoStats.index}" id="resultat#{eqExoStats.index}Msg" />
+
+                                    <!-- Activation d'un joker -->
+                                    <p:outputLabel value="#{msgm['TESTEXERCICE.JOCKER']}"/>
+                                    <p:inputSwitch onLabel="#{msgm['TESTEXERCICE.ACTIF']}" value="#{eqExo.jockerActif}"
+                                                   offLabel="#{msgm['TESTEXERCICE.INACTIF']}"
+                                                   disabled="#{exerciceBean.isExerciceDisabled(eqExo) || testBean.marathonEquipe
+                                                               .nombreJockers lt 1 || eqExo.jockerActif}">
+                                        <p:ajax event="change" listener="#{exerciceBean.changerExercice(eqExo)}" 
+                                                oncomplete="PF('confirmDlg').show()" />
+                                    </p:inputSwitch>
+                                    <p:commandButton value="#{msgm['TESTEXERCICE.VALIDER']}"
+                                                     action="#{exerciceBean.handleUploadFile(eqExo)}" id="charger" ajax="false"
+                                                     process="@this resultat#{eqExoStats.index} file#{eqExoStats.index}"
+                                                     update="@form file#{eqExoStats.index}Msg :left-form:pgBar :left-form:jokers langage#{eqExoStats.index}Msg
+                                                     tab#{eqExoStats.index}"
+                                                     disabled="#{exerciceBean.isExerciceDisabled(eqExo)}"/>
+                                    <!-- Validaton des exercices -->
+<!--                                    <p:commandButton value="#{msgm['TESTEXERCICE.VALIDER']}" 
+                                                     process="@this resultat#{eqExoStats.index}"
+                                                     update="@form :left-form:pgBar :left-form:jokers" 
+                                                     action="{exerciceBean.validateExercice(eqExo)}"
+                                                     disabled="{exerciceBean.isExerciceDisabled(eqExo)}"/>-->
+                                </h:panelGrid>
+                            </p:tab>
+                        </c:forEach>
+                    </p:tabView>
+                    <p:confirmDialog widgetVar="confirmDlg" header="#{msgm['TESTEXERCICE.CONFIRMATION']}" 
+                                     closable="false" closeOnEscape="true" message="#{msgm['TESTEXERCICE.CONFIRMJOCKERACT']}" 
+                                     hideEffect="explode" showEffect="fade">
+                        <p:commandButton value="#{msgm['TESTEXERCICE.CONFIRMATION.OUI']}" 
+                                         action="#{exerciceBean.activateJoker(true)}"
+                                         oncomplete="PF('confirmDlg').hide()" process="@this" update="@form :left-form:jokers"/>
+                        <p:commandButton value="#{msgm['TESTEXERCICE.CONFIRMATION.NON']}" 
+                                         action="#{exerciceBean.activateJoker(false)}"
+                                         oncomplete="PF('confirmDlg').hide()" process="@this" update="@form" />
+                    </p:confirmDialog>
+                </c:if>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
